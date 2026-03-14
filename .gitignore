@@ -1,0 +1,6 @@
+# Python compiled and cache files
+__pycache__/
+*.py[cod]
+
+# sqlite DB
+*.sqlite3
