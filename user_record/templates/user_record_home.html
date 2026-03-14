@@ -31,7 +31,7 @@
                             class="ur-result"
                             @click="addUserRecord(userRecord)"
                         >
-                            [[ userRecord.first_name ]] [[ userRecord.last_name ]]
+                            <span v-html="highlightSearch(userRecord.first_name + ' ' + userRecord.last_name)"></span>
                         </div>
                     </template>
                 </div>
@@ -115,6 +115,14 @@
                             console.error('Search failed:', error);
                             this.results = [];
                         }
+                    },
+                    highlightSearch(text) {
+                        if (!this.query) return text;
+
+                        const q = this.query.trim();
+                        const regex = new RegExp(`(${q})`, 'gi');
+
+                        return text.replace(regex, "<span class='highlight_search'>$1</span>");
                     },
                     addUserRecord(userRecord) {
                         const exists = this.selectedUserRecords.some(c => c.id === userRecord.id);

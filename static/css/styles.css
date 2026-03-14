@@ -49,6 +49,10 @@
     background: #f5f5f5;
 }
 
+.highlight_search {
+    background: #f1f087;
+}
+
 .ur-empty {
     color: #666;
     cursor: default;
