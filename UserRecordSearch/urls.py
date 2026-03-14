@@ -17,6 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from user_record.views import api_user_search, user_record_home
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
+]
+
+urlpatterns = [
+    path("", user_record_home, name="user_record_home"),
+    path("api/user_record/search/", api_user_search, name="api_user_record_search"),
 ]
