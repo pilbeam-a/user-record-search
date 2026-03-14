@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        {% load static %}
+        <title>{% block title %}User Records{% endblock %}</title>
+
+        <!-- Vue -->
+        <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+        <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    </head>
+
+    <body class="ur-dark">
+        <div id="app">
+            <div class="ur-search-container">
+                <input
+                    id="ur-search"
+                    v-model="query"
+                    @input="onSearchInput"
+                    type="text"
+                    class="ur-pill"
+                    placeholder="Search for a user..."
+                    autocomplete="off"
+                >
+
+                <div v-if="openResultsDropdown" class="ur-dropdown ur-pill">
+                    <template v-if="results.length">
+                        <div
+                            v-for="userRecord in results"
+                            :key="userRecord.id"
+                            class="ur-result"
+                            @click="addUserRecord(userRecord)"
+                        >
+                            [[ userRecord.first_name ]] [[ userRecord.last_name ]]
+                        </div>
+                    </template>
+                </div>
+            </div>
+
+            <div class="ur-selected-container">
+                <div class="ur-selected-container" v-if="selectedUserRecords.length">
+                    <div
+                        v-for="selectedUserRecord in selectedUserRecords"
+                        :key="selectedUserRecord.id"
+                        class="ur-card"
+                    >
+                        <div class="ur-card-name">
+                            [[ selectedUserRecord.first_name ]] [[ selectedUserRecord.last_name ]]
+                        </div>
+
+                        <div class="ur-card-detail" v-if="selectedUserRecord.job_title">
+                            [[ selectedUserRecord.job_title ]]
+                        </div>
+
+                        <div class="ur-card-detail" v-if="selectedUserRecord.email">
+                            [[ selectedUserRecord.email ]]
+                        </div>
+
+                        <div class="ur-card-detail" v-if="selectedUserRecord.phone">
+                            [[ selectedUserRecord.phone ]]
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const { createApp } = Vue;
+
+            createApp({
+                delimiters: ['[[', ']]'],
+                data() {
+                    return {
+                        query: '',
+                        results: [],
+                        selectedUserRecords: [],
+                        debounceTimer: null
+                    };
+                },
+                computed: {
+                    openResultsDropdown() {
+                        return this.results.length >= 1;
+                    }
+                },
+                methods: {
+                    onSearchInput() {
+                        clearTimeout(this.debounceTimer);
+
+                        const q = this.query.trim();
+
+                        if (q.length < 2) {
+                            this.results = [];
+                            return;
+                        }
+
+                        this.debounceTimer = setTimeout(() => {
+                            this.searchUserRecords();
+                        }, 500);
+                    },
+                    async searchUserRecords() {
+                        const q = this.query.trim();
+
+                        if (q.length < 2) {
+                            this.results = [];
+                            return;
+                        }
+
+                        try {
+                            const response = await fetch("{% url 'api_user_record_search' %}" + `?q=${q}`);
+                            const data = await response.json();
+
+                            const selectedIds = new Set(this.selectedUserRecords.map(c => c.id));
+                            this.results = data.filter(c => !selectedIds.has(c.id));
+                        } catch (error) {
+                            console.error('Search failed:', error);
+                            this.results = [];
+                        }
+                    },
+                    addUserRecord(userRecord) {
+                        const exists = this.selectedUserRecords.some(c => c.id === userRecord.id);
+                        if (!exists) {
+                            this.selectedUserRecords.push(userRecord);
+                        }
+                        this.query = '';
+                        this.results = [];
+                    },
+                }
+            }).mount('#app');
+        </script>
+    </body>
+</html>
