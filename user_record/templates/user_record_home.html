@@ -7,6 +7,7 @@
         <!-- Vue -->
         <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
 
+        <!-- CSS -->
         <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     </head>
 
@@ -115,11 +116,13 @@
 
                         const q = this.query.trim();
 
+                        // Only search if 2 or more characters entered
                         if (q.length < 2) {
                             this.results = [];
                             return;
                         }
 
+                        // Wait 0.5 seconds after last input to search
                         this.debounceTimer = setTimeout(() => {
                             this.searchUserRecords();
                         }, 500);
@@ -127,6 +130,7 @@
                     async searchUserRecords() {
                         const q = this.query.trim();
 
+                        // Only search if 2 or more characters entered
                         if (q.length < 2) {
                             this.results = [];
                             return;
@@ -144,6 +148,7 @@
                         }
                     },
                     highlightSearch(text) {
+                        // Highlight the searched for text in the results
                         if (!this.query) return text;
 
                         const q = this.query.trim();
@@ -152,6 +157,7 @@
                         return text.replace(regex, "<span class='highlight_search'>$1</span>");
                     },
                     addUserRecord(userRecord) {
+                        // Add the User record to the selected User records
                         const exists = this.selectedUserRecords.some(c => c.id === userRecord.id);
                         if (!exists) {
                             this.selectedUserRecords.push(userRecord);
@@ -182,6 +188,7 @@
                             const data = await response.json();
 
                             if (data.success) {
+                                // On success, show success message and reset createForm
                                 this.createMessage = "New user added!";
 
                                 this.createForm = {
@@ -194,6 +201,7 @@
 
                                 this.showCreateForm = false;
                             } else {
+                                // If errors, list them in the message box
                                 let errorMsg = '';
 
                                 Object.entries(data.errors)
@@ -216,6 +224,7 @@
                         } catch (error) {
                             this.createMessage = "Server error. Please try again.";
                         } finally {
+                            // Remove createMessage after 5 seconds
                             setTimeout(() => {
                                 this.createMessage = '';
                             }, 5000);

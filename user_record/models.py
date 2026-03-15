@@ -22,8 +22,10 @@ class UserRecord(BaseModel):
     Model to store User records.
 
     Behaviour:
-    - first_name and last_name must be unique together
-    - phone and email must be unique
+    -   Full name (First name and Last name) must be unique
+    -   Phone and Email must be unique
+    -   Phone must be a valid UK mobile phone number (uses uk_mobile_phone_validator)
+    -   Email must be a valid email address
     """
 
     first_name = models.CharField(max_length=250)

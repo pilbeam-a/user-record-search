@@ -14,11 +14,12 @@ from user_record.serializers import UserRecordSerializer
 @api_view(["GET"])
 def api_user_search(request):
     """
-    API get endpoint to search user records for the given query q.
+    API get endpoint to search User records for the given query q.
 
     Behaviour:
     -   Only searches once the query is 2 or more characters long.
     -   Searches on first name or last name containing the query.
+    -   Already selected User records are filtered out in the JS.
     """
 
     q = request.GET.get("q", "").strip()
@@ -45,8 +46,16 @@ class UserRecordCreateView(View):
     """
     UserRecord Create view.
 
-    Creates UserRecord if form is valid and returns success and errors
-    as a JsonResponse to avoid page reload.
+    Validates UserRecord using the constraints set out in the model
+    -   Full name (First name and Last name) must be unique
+    -   Phone and Email must be unique
+    -   Phone must be a valid UK mobile phone number
+    -   Email must be a valid email address
+
+    Returns:
+    -   JsonResponse:
+            with success True, if validation successful
+            with success False and errors, if validation fails
     """
 
     def post(self, request, *args, **kwargs):
