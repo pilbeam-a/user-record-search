@@ -196,13 +196,22 @@
                             } else {
                                 let errorMsg = '';
 
-                                Object.entries(data.errors).forEach(([field, errors]) => {
-                                    errors.forEach(err => {
-                                        errorMsg += `${field}: ${err}\n`;
-                                    });
+                                Object.entries(data.errors)
+                                    .filter(([field]) => field === "__all__")
+                                    .forEach(([field, errors]) => {
+                                        errors.forEach(err => {
+                                            errorMsg += `${err}\n\n`;
+                                        });
+                                });
+                                Object.entries(data.errors)
+                                    .filter(([field]) => field !== "__all__")
+                                    .forEach(([field, errors]) => {
+                                        errors.forEach(err => {
+                                            errorMsg += `${String(field).charAt(0).toUpperCase() + String(field).slice(1)}: ${err}\n\n`;
+                                        });
                                 });
 
-                                this.createMessage = errorMsg;
+                                this.createMessage = errorMsg.trim();
                             }
                         } catch (error) {
                             this.createMessage = "Server error. Please try again.";

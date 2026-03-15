@@ -58,7 +58,7 @@ class UserRecordCreateView(View):
             return JsonResponse({
                 "success": True,
             })
-        print(form.errors)
+
         return JsonResponse({
             "success": False,
             "errors": form.errors,

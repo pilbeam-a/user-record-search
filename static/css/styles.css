@@ -28,6 +28,8 @@
     background: var(--highlight-color);
     color: white;
     border-radius: 24px;
+
+    white-space: pre-line;
 }
 
 .ur-search-container {

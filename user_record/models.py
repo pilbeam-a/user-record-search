@@ -1,5 +1,7 @@
 from django.db import models
 
+from user_record.validators import uk_mobile_phone_validator
+
 class BaseModel(models.Model):
     """
     Base model.
@@ -27,7 +29,7 @@ class UserRecord(BaseModel):
     first_name = models.CharField(max_length=250)
     last_name = models.CharField(max_length=250)
     job_title = models.CharField(max_length=250)
-    phone = models.CharField(max_length=250, unique=True)
+    phone = models.CharField(max_length=250, unique=True, validators=[uk_mobile_phone_validator,])
     email = models.EmailField(max_length=250, unique=True)
 
     class Meta:
