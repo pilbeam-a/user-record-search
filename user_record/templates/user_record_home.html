@@ -12,6 +12,10 @@
 
     <body class="ur-dark">
         <div id="app">
+            <div v-if="createMessage" class="ur-message">
+                [[ createMessage ]]
+            </div>
+
             <div class="ur-search-container">
                 <input
                     id="ur-search"
@@ -62,6 +66,18 @@
                     </div>
                 </div>
             </div>
+
+            <div class="ur-create">
+                <div v-if="showCreateForm">
+                    {% include "user_record_create.html" %}
+                </div>
+
+                <div class="ur-create-button-container">
+                    <button type="button" class="ur-button" @click="showCreateForm = !showCreateForm">
+                        New User +
+                    </button>
+                </div>
+            </div>
         </div>
 
         <script>
@@ -74,7 +90,18 @@
                         query: '',
                         results: [],
                         selectedUserRecords: [],
-                        debounceTimer: null
+                        debounceTimer: null,
+                        showCreateForm: false,
+
+                        createMessage: '',
+
+                        createForm: {
+                            first_name: '',
+                            last_name: '',
+                            job_title: '',
+                            phone: '',
+                            email: '',
+                        }
                     };
                 },
                 computed: {
@@ -132,6 +159,59 @@
                         this.query = '';
                         this.results = [];
                     },
+                    async submitCreateForm() {
+                        const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+                        const formData = new URLSearchParams();
+                        formData.append('first_name', this.createForm.first_name);
+                        formData.append('last_name', this.createForm.last_name);
+                        formData.append('job_title', this.createForm.job_title);
+                        formData.append('phone', this.createForm.phone);
+                        formData.append('email', this.createForm.email);
+
+                        try {
+                            const response = await fetch("{% url 'user_record_create' %}", {
+                                method: "POST",
+                                headers: {
+                                    "X-CSRFToken": csrfToken,
+                                    "Content-Type": "application/x-www-form-urlencoded",
+                                },
+                                body: formData.toString(),
+                            });
+
+                            const data = await response.json();
+
+                            if (data.success) {
+                                this.createMessage = "New user added!";
+
+                                this.createForm = {
+                                    first_name: '',
+                                    last_name: '',
+                                    job_title: '',
+                                    phone: '',
+                                    email: '',
+                                };
+
+                                this.showCreateForm = false;
+                            } else {
+                                let errorMsg = '';
+
+                                Object.entries(data.errors).forEach(([field, errors]) => {
+                                    errors.forEach(err => {
+                                        errorMsg += `${field}: ${err}\n`;
+                                    });
+                                });
+
+                                this.createMessage = errorMsg;
+                            }
+                        } catch (error) {
+                            this.createMessage = "Server error. Please try again.";
+                        } finally {
+                            setTimeout(() => {
+                                this.createMessage = '';
+                            }, 5000);
+                        }
+                    }
                 }
             }).mount('#app');
         </script>

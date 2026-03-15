@@ -1,9 +1,12 @@
 from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render
+from django.views.generic import View
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
+from user_record.forms import UserRecordForm
 from user_record.models import UserRecord
 from user_record.serializers import UserRecordSerializer
 
@@ -36,3 +39,27 @@ def user_record_home(request):
     """
 
     return render(request, "user_record_home.html")
+
+
+class UserRecordCreateView(View):
+    """
+    UserRecord Create view.
+
+    Creates UserRecord if form is valid and returns success and errors
+    as a JsonResponse to avoid page reload.
+    """
+
+    def post(self, request, *args, **kwargs):
+        form = UserRecordForm(request.POST)
+
+        if form.is_valid():
+            form.save()
+
+            return JsonResponse({
+                "success": True,
+            })
+        print(form.errors)
+        return JsonResponse({
+            "success": False,
+            "errors": form.errors,
+        }, status=400)

@@ -17,6 +17,19 @@
     font-size: 16px;
 }
 
+.ur-message {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+
+    max-width: 320px;
+    padding: 10px 14px;
+
+    background: var(--highlight-color);
+    color: white;
+    border-radius: 24px;
+}
+
 .ur-search-container {
     position: relative;
     width: var(--container-width);
@@ -26,7 +39,7 @@
     width: 100%;
     background: white;
     border-radius: 24px;
-    border: 1px var(--highlight-color);
+    border: 1px solid var(--highlight-color);
     padding: 12px 18px;
     box-sizing: border-box;
 }
@@ -84,4 +97,66 @@
 
 .ur-card-name {
     font-weight: 600;
+}
+
+.ur-create {
+    position: fixed;
+    bottom: 40px;
+    left: 0;
+    width: 100%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.ur-create-form {
+    width: var(--container-width);
+    background: white;
+    padding: 12px;
+    border-radius: 24px;
+    border: 1px solid var(--highlight-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.ur-form-input {
+    margin-top: 5px;
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid black;
+    border-radius: 24px;
+    box-sizing: border-box;
+    font-size: 16px;
+}
+
+.ur-form-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
+}
+
+.ur-col-2 {
+    grid-column: span 3;
+}
+
+.ur-col-3 {
+    grid-column: span 2;
+}
+
+.ur-create-button-container {
+    display: flex;
+    justify-content: center;
+}
+
+.ur-button {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-radius: 24px;
+    border: 0px solid black;
+    background: var(--highlight-color);
+    color: white;
+    cursor: pointer;
 }

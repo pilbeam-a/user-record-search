@@ -1,0 +1,49 @@
+<div class="ur-create-form">
+    <form class="ur-form-grid" @submit.prevent="submitCreateForm">
+        {% csrf_token %}
+
+        <input
+            v-model="createForm.first_name"
+            type="text"
+            name="first_name"
+            placeholder="First name"
+            class="ur-form-input ur-col-2"
+        >
+
+        <input
+            v-model="createForm.last_name"
+            type="text"
+            name="last_name"
+            placeholder="Last name"
+            class="ur-form-input ur-col-2"
+        >
+        
+        <input
+            v-model="createForm.job_title"
+            type="text"
+            name="job_title"
+            placeholder="Job title"
+            class="ur-form-input ur-col-3"
+        >
+
+        <input
+            v-model="createForm.phone"
+            type="text"
+            name="phone"
+            placeholder="Phone"
+            class="ur-form-input ur-col-3"
+        >
+
+        <input
+            v-model="createForm.email"
+            type="text"
+            name="email"
+            placeholder="Email"
+            class="ur-form-input ur-col-3"
+        >
+
+        <div class="ur-create-button-container">
+            <button type="submit" class="ur-button">Create</button>
+        </div>
+    </form>
+</div>
